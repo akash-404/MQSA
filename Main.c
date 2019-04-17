@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include<stdbool.h>
 
-int no_of_processes = 0; 
+int no_of_processes = 0;
 int counter=1,timer = 0;
 int n;
 
@@ -39,8 +39,8 @@ void check();
 void input(int no_of_processes)
 {
 	int i = 0;
-	
-	
+
+
 	for(i=0; i<no_of_processes; i++)
 	{
 		bool flag = true;
@@ -60,9 +60,9 @@ void input(int no_of_processes)
 		p_arr[i].remaining_time = p_arr[i].burst_time;
 		printf("Enter arrival time: ");
 		scanf("%d", &p_arr[i].arrival_time);
-		
-		
-	///////////// assigning priority group	///////////////	
+
+
+	///////////// assigning priority group	///////////////
 		if(p_arr[i].priority<4)
 		{
 			p_arr[i].priority_group = 1;
@@ -75,7 +75,7 @@ void input(int no_of_processes)
 		{
 			p_arr[i].priority_group = 3;
 		}
-		
+
 
 	}
 
@@ -93,7 +93,7 @@ void input(int no_of_processes)
 				p_arr[j] = p_arr[j+1];
 				p_arr[j+1] = temp;
 			}
-		}	
+		}
 	}
 	timer = p_arr[0].arrival_time;
 
@@ -103,12 +103,18 @@ void input(int no_of_processes)
 
 void show()
 {
-	printf("Process ID  Priority  Burst Time  Arrival Time  Priority_Group  Remaining Time  flag\n");
+    wt_tt();
+	printf("Process ID  Priority  Burst Time  Arrival Time  Priority_Group  Completion Time  Turnaround Time\n");
 	int i = 0;
 	for(i=0; i<n; i++)
-	{		
+	{
 		printf("%d \t", p_arr[i].pid);
-		printf("%d ", p_arr[i].completion_time);
+		printf("%d \t", p_arr[i].priority);
+		printf("%d \t", p_arr[i].burst_time);
+		printf("%d \t", p_arr[i].arrival_time);
+		printf("%d \t", p_arr[i].priority_group);
+		printf("%d \t", p_arr[i].completion_time);
+		printf("%d \t", p_arr[i].turnaround_time);
 	}
 }
 
@@ -150,9 +156,9 @@ void RoundRobin()
 	}
 	check();
 	FCFS();
-	
-	
-	
+
+
+
 }
 
 
@@ -179,9 +185,9 @@ void PriorityScheduling()
 							p_arr[j] = p_arr[j+1];
 							p_arr[j+1] = temp;
 						}
-					}	
+					}
 			}
-			
+
 			int rt = p_arr[i].remaining_time;
 			if(rt>0 && rt<=10)
 			{
@@ -205,9 +211,9 @@ void PriorityScheduling()
 			}
 		}
 	}
-	
-	
-	
+
+
+
 }
 
 
@@ -246,8 +252,8 @@ void FCFS()
 				p_arr[i].completion_time = timer;
 			}
 		}
-	}	
-	
+	}
+
 
 	check();
 	PriorityScheduling();
@@ -274,7 +280,8 @@ void FCFS()
 void check()
 {
 	int count = 0;
-	for(int i=0;i<n;i++)
+	int i;
+	for(i=0;i<n;i++)
 	{
 		if(p_arr[i].remaining_time==0)
 		{
@@ -297,7 +304,15 @@ void check()
 	}
 }
 
-
+void wt_tt()
+{
+	int i;
+	for(i=0;i<n;i++)
+	{
+		p_arr[i].turnaround_time = p_arr[i].completion_time - p_arr[i].arrival_time;
+		p_arr[i].waiting_time = p_arr[i].turnaround_time - p_arr[i].burst_time;
+	}
+}
 
 
 
@@ -320,5 +335,4 @@ void main()
 	input(no_of_processes);
 	check();
 }
-
 
