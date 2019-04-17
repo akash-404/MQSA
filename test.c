@@ -1,182 +1,114 @@
 #include<stdio.h>
-#include<stdlib.h>
-#include<stdbool.h>
 
-int no_of_processes = 0; 
-int counter=1;
-
-//Queues
-int q1_no,q2_no,q3_no;
-//q1 = Round Robin Scheduling algorithm
-//q2 = Priority Scheduling algorithm
-//q3 = FCFS scheduling algorithm
-
-
-struct p_info
+int main()
 {
-	int pid;
-	int priority;
-	int burst_time;
-	int waiting_time;
-	int turnaround_time;
-	int remaining_time;
-	int arrival_time;
-	int priority_group;
-	int flag;
-};
+      int i, no_of_processes, total = 0, x, counter = 0, time_quantum=2,j;
+
+      int wait_time = 0, turnaround_time = 0,pos,z,p[10],priority[10], arrival_time[10], burst_time[10], temp[10],b;
+
+      float average_wait_time, average_turnaround_time;
+
+      printf("\nEnter Total Number of Processes:");
+
+      scanf("%d", &no_of_processes);
+
+      x = no_of_processes;
+      for(i = 0; i < no_of_processes; i++)
+      {
+        p[i]=i+1;
+
+        priority[i]=0;
+            printf("\nEnter total Details of Process[%d]\n", i + 1);
+            printf("Arrival Time:\t");
+            scanf("%d", &arrival_time[i]);
+            printf("Burst Time:\t");
+            scanf("%d", &burst_time[i]);
+            temp[i] = burst_time[i];
+      }
 
 
-//List of functions used
-void check_algo();
-void input();
-void FCFS();
-void PriorityScheduling();
-void RoundRobin(struct p_info[]);
-void show(struct p_info[]);
+      printf("\nProcess ID\t\tBurst Time\t Turnaround Time\t Waiting Time\t Priority\n");
+      for(total = 0, i = 0; x != 0;)
+      {
 
+            for(z=0;z<no_of_processes;z++)
+            {
+            int temp1;
+            pos=z;
+            for(j=z+1;j<no_of_processes;j++)
+            {
+                if(priority[j]<priority[pos])
+                pos=j;
+            }
 
-/*void check_algo()
-{
-	if(counter==1)
-		RoundRobin(struct p_info P);
-	else if(counter == 2)
-		PriorityScheduling();
-	else if(counter == 3)
-		FCFS();
-		
-}
-*/
+        temp1=priority[z];
 
+        priority[z]=priority[pos];
 
+        priority[pos]=temp1;
 
-void input(struct p_info p_arr[])
-{
-	int i = 0;
-	
-	
-	for(i=0; i<no_of_processes; i++)
-	{
-		bool flag = true;
-		printf("Enter process id:\t");
-		scanf("%d", &p_arr[i].pid);
-		printf("Enter details for process\n");
-		while(flag==true)
-		{
-			printf("Enter priority(from 1 to 10): ");
-			scanf("%d", &p_arr[i].priority);
-			int a = p_arr[i].priority;
-			if(a>=1 && a<=10)
-				flag = false;
-		}
-		printf("Enter burst time: ");
-		scanf("%d", &p_arr[i].burst_time);
-		p_arr[i].remaining_time = p_arr[i].burst_time;
-		printf("Enter arrival time: ");
-		scanf("%d", &p_arr[i].arrival_time);
-		if(p_arr[i].priority<4)
-		{
-			p_arr[i].priority_group = 1;
-		}
-		else if(p_arr[i].priority>3 && p_arr[i].priority<7)
-		{
-			p_arr[i].priority_group = 2;
-		}
-		else if(p_arr[i].priority>7 && p_arr[i].priority<11)
-		{
-			p_arr[i].priority_group = 3;
-		}
-		
+            temp1=burst_time[z];
+            burst_time[z]=burst_time[pos];
+            burst_time[pos]=temp1;
+                    temp1=arrival_time[z];
+                arrival_time[z]=arrival_time[pos];
+            arrival_time[pos]=temp1;
 
-	}
+            temp1=p[z];
+                p[z]=p[pos];
+            p[pos]=temp1;
 
+            temp1=temp[z];
+                temp[z]=temp[pos];
+            temp[pos]=temp1;
+            }
+        {
+        }
 
+            if(temp[i] <= time_quantum && temp[i] > 0)
+            {
+                  total = total + temp[i];
+                  temp[i] = 0;
+                  counter = 1;
+            }
 
-	///////////////	sorting	//////////
-	int j;
-	for(i=0;i<no_of_processes-1;i++)
-	{
-		for(j=0; j<no_of_processes-i-1;j++)
-		{
-			if(p_arr[j].arrival_time > p_arr[j+1].arrival_time)
-			{
-				struct p_info temp = p_arr[j];
-				p_arr[j] = p_arr[j+1];
-				p_arr[j+1] = temp;
-			}
-		}	
-	}
+            else if(temp[i] > 0)
+            {
+                  temp[i] = temp[i] - time_quantum;
+                  total = total + time_quantum;
+            }
 
+    for(b=0;b<no_of_processes;b++)
+        {
+            if(b==i)
+            priority[b]+=1;
+            else
+            priority[b]+=2;
+        }
 
-}
+            if(temp[i] == 0 && counter == 1)
+            {
+                  x--;
+                  printf("\nProcess[%d]\t\t%d\t\t %d\t\t %d\t\t%d", p[i], burst_time[i], total - arrival_time[i], total - arrival_time[i] - burst_time[i],priority[i]);
+                  wait_time = wait_time + total - arrival_time[i] - burst_time[i];
+                  turnaround_time = turnaround_time + total - arrival_time[i];
+                  counter = 0;
+            }
+            if(i == no_of_processes - 1)
+            {
+                  i = 0;
 
+            }
+            else if(arrival_time[i + 1] <= total)
+            {
+                  i++;
 
-void show(struct p_info p_arr[])
-{
-	int i = 0;
-	for(i=0; i<no_of_processes; i++)
-	{
-		printf("Process ID: %d\t",p_arr[i].pid);
-		printf("priority : %d\t",p_arr[i].priority);
-		printf("burst time: %d\t", p_arr[i].burst_time);
-		printf("arrival time: %d\t",p_arr[i].arrival_time);
-		printf("Priority Group: %d",p_arr[i].priority_group);
-		printf("\n");		
+            }
+            else
+            {
+                  i = 0;
 
-	}
-
-	
-}
-
-
-/*void RoundRobin(struct p_info P)
-{
-	struct p_info p_arr = P;
-	int time_quantum = 4;
-	struct p_info* ptr;
-	int i = 0, time = 0;
-	for(i=0;i<no_of_processes && time<10;i++)
-	{
-		if(p_arr[i].priority_group == 1)
-		{
-			int rt = p_arr[i].remaining_time;
-			if(rt <= time_quantum && rt>0)
-			{
-				time+=rt;
-				rt = 0;
-				p_arr[i].remaining_time = 0;
-				p_arr[i].flag = 1;
-			}
-			else if(rt>0)
-			{
-				rt = rt-time_quantum;
-				p_arr[i].remaining_time -= time_quantum;
-				time+=time_quantum;
-
-			}
-
-			if(rt==0 && p_arr[i].flag == 1)
-			{
-				no_of_processes -= 1;
-			}
-		}
-	}
-}
-
-*/
-
-
-void main()
-{
-	printf("Enter total number of processes : ");
-	scanf("%d",&no_of_processes);
-	struct p_info p_arr[no_of_processes];
-	input(p_arr);
-	int i = 3;
-	/*sort_arrival();
-	while(no_of_processes>0)
-	{
-		check_algo();
-	}
-	*/
-	show(p_arr);
+            }
+      }
+      return 0;
 }
