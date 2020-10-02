@@ -2,7 +2,7 @@
 
 int main()
 {
-      int i, no_of_processes, total = 0, x, counter = 0, time_quantum=2,j;
+      int i, n , total = 0, x, counter = 0, time_quantum=2,j;
 
       int wait_time = 0, turnaround_time = 0,pos,z,p[10],priority[10], arrival_time[10], burst_time[10], temp[10],b;
 
@@ -10,10 +10,10 @@ int main()
 
       printf("\nEnter Total Number of Processes:");
 
-      scanf("%d", &no_of_processes);
+      scanf("%d", &n);
 
-      x = no_of_processes;
-      for(i = 0; i < no_of_processes; i++)
+      x = n;
+      for(i = 0; i < n; i++)
       {
         p[i]=i+1;
 
@@ -31,11 +31,11 @@ int main()
       for(total = 0, i = 0; x != 0;)
       {
 
-            for(z=0;z<no_of_processes;z++)
+            for(z=0;z<n;z++)
             {
             int temp1;
             pos=z;
-            for(j=z+1;j<no_of_processes;j++)
+            for(j=z+1;j<n;j++)
             {
                 if(priority[j]<priority[pos])
                 pos=j;
@@ -78,7 +78,7 @@ int main()
                   total = total + time_quantum;
             }
 
-    for(b=0;b<no_of_processes;b++)
+    for(b=0;b<n;b++)
         {
             if(b==i)
             priority[b]+=1;
@@ -94,7 +94,7 @@ int main()
                   turnaround_time = turnaround_time + total - arrival_time[i];
                   counter = 0;
             }
-            if(i == no_of_processes - 1)
+            if(i == n - 1)
             {
                   i = 0;
 
